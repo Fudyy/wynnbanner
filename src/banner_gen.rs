@@ -26,10 +26,10 @@ fn get_pattern(pattern_str: &str) -> Option<Pattern> {
         "triangletop" => Some(Pattern::TriangleTop),
         "trianglesbottom" => Some(Pattern::TrianglesBottom),
         "trianglestop" => Some(Pattern::TrianglesTop),
-        "diagonaltopleft" => Some(Pattern::DiagonalTopLeft),
-        "diagonaltopright" => Some(Pattern::DiagonalTopRight),
-        "diagonalbottomleft" => Some(Pattern::DiagonalBottomLeft),
-        "diagonalbottomright" => Some(Pattern::DiagonalBottomRight),
+        "diagonalleft" => Some(Pattern::DiagonalTopLeft),
+        "diagonalright" => Some(Pattern::DiagonalTopRight),
+        "diagonalleftmirror" => Some(Pattern::DiagonalBottomLeft),
+        "diagonalrightmirror" => Some(Pattern::DiagonalBottomRight),
         "circlemiddle" => Some(Pattern::CircleMiddle),
         "rhombusmiddle" => Some(Pattern::RhombusMiddle),
         "halfvertical" => Some(Pattern::HalfVertical),
@@ -42,7 +42,7 @@ fn get_pattern(pattern_str: &str) -> Option<Pattern> {
         "gradientup" => Some(Pattern::GradientUp),
         "skull" => Some(Pattern::Skull),
         "flower" => Some(Pattern::Flower),
-        "thing" => Some(Pattern::Thing),
+        "mojang" => Some(Pattern::Thing),
         _ => None,
     }
 }
