@@ -48,6 +48,8 @@ fn remove_files_from_path(path: &str) -> io::Result<()> {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     
+    fs::create_dir("images").unwrap_or_default();
+
     spawn(async move {
         let mut interval = time::interval(Duration::from_secs(3600));
         loop {
