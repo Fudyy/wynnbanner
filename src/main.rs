@@ -8,7 +8,8 @@ use serde::{Deserialize, Serialize};
 use actix::spawn;
 use std::fs;
 use std::io;
-use std::env;
+
+const PORT: u16 = 3000;
 
 #[derive(Debug, Serialize, Deserialize)]
 struct BodyPattern {
@@ -46,11 +47,6 @@ fn remove_files_from_path(path: &str) -> io::Result<()> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let port = env::var("BANNER_PORT");
-    let port = match port {
-        Ok(p) => p,
-        Err(_) => panic!("BANNER_PORT not set on environment variables"),
-    };
 
     fs::create_dir("images").unwrap_or_default();
 
@@ -63,7 +59,7 @@ async fn main() -> std::io::Result<()> {
     });
 
     HttpServer::new(|| App::new().service(index))
-        .bind(format!("127.0.0.1:{}", port))?
+        .bind(format!("127.0.0.1:{}", PORT))?
         .run()
         .await
 }
