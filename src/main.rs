@@ -1,10 +1,13 @@
-use actix_web::{get, web, App, HttpServer, Responder};
-use serde::{Serialize, Deserialize};
+mod banner_gen;
+
+use actix_web::{get, web::Json, App, HttpServer};
+use actix_files::NamedFile;
+use serde::{Deserialize, Serialize};
 
 const PORT: &str = "5003";
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Pattern {
+struct BodyPattern {
     pattern: String,
     color: String,
 }
@@ -12,26 +15,20 @@ struct Pattern {
 #[derive(Debug, Serialize, Deserialize)]
 struct RequestBody {
     base_color: String,
-    patterns: Vec<Pattern>,
+    patterns: Vec<BodyPattern>,
 }
 
 #[get("/")]
-async fn index(request: web::Json<RequestBody>) -> impl Responder {
-    let mut result = String::from("Base color: ");
-    result.push_str(&request.base_color);
-    result.push_str("\nPatterns: ");
-    for pattern in &request.patterns {
-        result.push_str(&format!("{} - {} ", pattern.pattern, pattern.color));
-    }
-    result
+async fn index(request: Json<RequestBody>) -> actix_web::Result<NamedFile> {
+    let path = banner_gen::generate_banner(request.into_inner());
+
+    Ok(NamedFile::open(path)?)
 }
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-        .service(index)
-    }).bind(format!("127.0.0.1:{}", PORT))?
-    .run()
-    .await
+    HttpServer::new(|| App::new().service(index))
+        .bind(format!("127.0.0.1:{}", PORT))?
+        .run()
+        .await
 }
