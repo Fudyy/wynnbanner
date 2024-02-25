@@ -26,7 +26,7 @@ struct RequestBody {
 #[get("/")]
 async fn index(request: Json<RequestBody>) -> actix_web::Result<NamedFile> {
     let path = banner_gen::generate_banner(request.into_inner());
-
+    println!("Generated banner at path: {}", path);
     Ok(NamedFile::open(path)?)
 }
 
@@ -47,14 +47,24 @@ fn remove_files_from_path(path: &str) -> io::Result<()> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-
-    fs::create_dir("images").unwrap_or_default();
+    println!("Starting server on port: {}", PORT);
+    
+    match fs::create_dir("images") {
+        Ok(_) => println!("Created images directory"),
+        Err(_) => (),
+    };
 
     spawn(async move {
         let mut interval = time::interval(Duration::from_secs(3600));
         loop {
             interval.tick().await;
-            remove_files_from_path("images/").unwrap()
+            println!("Clearing saved images");
+            match remove_files_from_path("images/") {
+                Ok(_) => println!("Cleared saved images"),
+                Err(err) => {
+                    println!("Error clearing saved images: {}", err);
+                },
+            };
         }
     });
 
